@@ -28,8 +28,8 @@ def parser(inputFile):
             keywordsVal = record.get('OT')
             meshVal = record.get('MH')
             count +=1
-            mycol.insert_one({"title": titleVal, "Abstract": abstractVal, "keywords": keywordsVal, "meshterms": meshVal})
-        print(count)
+            mycol.insert_one({"title": titleVal, "abstract": abstractVal, "keywords": [keywordsVal], "meshterms": [meshVal]})
+        print("Inserted {} records into pubmedDB".format(count))
 
 
 # MAIN
@@ -42,3 +42,9 @@ def parser(inputFile):
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 parser("../data/perloutput.txt")
 
+# INDEX
+x=mycol.find()
+for l in x:
+    print(l)
+# ANALYZE pubmedDB
+mycol.create_index([("abstract",pymongo.TEXT),("title",pymongo.TEXT)])
