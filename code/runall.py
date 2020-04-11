@@ -43,8 +43,15 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 parser("../data/perloutput.txt")
 
 # INDEX
-x=mycol.find()
-for l in x:
-    print(l)
-# ANALYZE pubmedDB
 mycol.create_index([("abstract",pymongo.TEXT),("title",pymongo.TEXT)])
+
+# ANALYZE pubmedDB
+words = ["bacterial", "pathogens"]
+phrase = "\"bacterial pathogens\""
+# db.Article.distinct("abstract",{$text: {$search: "bacterial"}}).length
+q1 = mycol.distinct("title",{"$text": {"$search": words[0]}})
+q2 = mycol.distinct("title",{"$text": {"$search": words[1]}})
+q3 = set(q1).intersection(set(q2))
+q4 = mycol.distinct("title",{"$text": {"$search": phrase}})
+print(len(q1),len(q2),len(q3), len(q4))
+
